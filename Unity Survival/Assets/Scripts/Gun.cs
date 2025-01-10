@@ -18,12 +18,17 @@ public class Gun : MonoBehaviour
 
     public float damage = 20f;
     
+    private AudioSource audio;
+    public AudioClip clip;
+    
     void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
 
         lineRenderer.enabled = false;
         lineRenderer.positionCount = 2;
+        
+        audio = GetComponent<AudioSource>();
     }
     
     public void Fire()
@@ -49,7 +54,6 @@ public class Gun : MonoBehaviour
                 endPos = firePosition.position + firePosition.forward * fireDistance;
             }
             
-            
             StartCoroutine(ShotEffect(endPos));
         }
     }
@@ -60,6 +64,7 @@ public class Gun : MonoBehaviour
         lineRenderer.SetPosition(0, firePosition.position);
         lineRenderer.SetPosition(1, hitPoint);
         
+        audio.PlayOneShot(clip);
         muzzleEffect.Play();
 
         yield return new WaitForSeconds(0.003f);

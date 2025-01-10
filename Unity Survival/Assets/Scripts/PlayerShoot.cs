@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class PlayerShoot : MonoBehaviour
 {
@@ -18,5 +19,7 @@ public class PlayerShoot : MonoBehaviour
         {
             gun.Fire();
         }
+
+        
     }
 }

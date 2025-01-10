@@ -132,20 +132,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!isSettingPanelOpen)
-            {
-                Time.timeScale = 0f;
-                
-                settingPanel.gameObject.SetActive(true);
-            }
-            else
-            {
-                Time.timeScale = 1f;
-                
-                settingPanel.gameObject.SetActive(false);
-            }
-            
-            isSettingPanelOpen = !isSettingPanelOpen;
+            SettingPanel();
         }
     }
 
@@ -156,6 +143,29 @@ public class PlayerHealth : MonoBehaviour
         yield return new WaitForSeconds(0.05f);
         
         hitPanel.gameObject.SetActive(false);
+    }
+
+    public void SettingPanel()
+    {
+        if (!isSettingPanelOpen)
+        {
+            Time.timeScale = 0f;
+                
+            settingPanel.gameObject.SetActive(true);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+                
+            settingPanel.gameObject.SetActive(false);
+        }
+            
+        isSettingPanelOpen = !isSettingPanelOpen;
+    }
+
+    public void GameByeBye()
+    {
+        Application.Quit();
     }
     
     public void RestartLevel()
