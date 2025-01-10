@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using MouseButton = UnityEngine.UIElements.MouseButton;
+using Slider = UnityEngine.UI.Slider;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -16,6 +19,7 @@ public class PlayerHealth : MonoBehaviour
     private PlayerShoot playerShooter;
 
     public Transform hitPanel;
+    public Transform settingPanel;
     
     public float maxHp = 100f;
 
@@ -23,6 +27,11 @@ public class PlayerHealth : MonoBehaviour
     public bool IsDead { get; private set; }
 
     public event Action onDeath;
+    
+    public Transform gameOverPanel;
+    bool isGameOver;
+    
+    public bool isSettingPanelOpen;
 
     private void Awake()
     {
@@ -35,6 +44,9 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         hitPanel.gameObject.SetActive(false);
+        settingPanel.gameObject.SetActive(false);
+        
+        Time.timeScale = 1f;
     }
 
     protected void OnEnable()
@@ -84,8 +96,19 @@ public class PlayerHealth : MonoBehaviour
 
         playerMovement.enabled = false;
         playerShooter.enabled = false;
+        
+        StartCoroutine(ShowGameOverPanel());
     }
 
+    IEnumerator ShowGameOverPanel()
+    {
+        yield return new WaitForSeconds(3f);
+        
+        Time.timeScale = 0f;
+        gameOverPanel.gameObject.SetActive(true);
+        isGameOver = true;
+    }
+    
     public void AddHp(float add)
     {
         if (IsDead)
@@ -102,14 +125,27 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (isGameOver && Input.GetMouseButtonDown((int)MouseButton.LeftMouse))
         {
-            OnDamage(20, Vector3.zero, Vector3.zero);
+            SceneManager.LoadScene(0);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            AddHp(20);
+            if (!isSettingPanelOpen)
+            {
+                Time.timeScale = 0f;
+                
+                settingPanel.gameObject.SetActive(true);
+            }
+            else
+            {
+                Time.timeScale = 1f;
+                
+                settingPanel.gameObject.SetActive(false);
+            }
+            
+            isSettingPanelOpen = !isSettingPanelOpen;
         }
     }
 
@@ -120,5 +156,10 @@ public class PlayerHealth : MonoBehaviour
         yield return new WaitForSeconds(0.05f);
         
         hitPanel.gameObject.SetActive(false);
+    }
+    
+    public void RestartLevel()
+    {
+        
     }
 }

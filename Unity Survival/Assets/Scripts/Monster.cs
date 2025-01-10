@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,18 +15,22 @@ public class Monster : MonoBehaviour
     public float Hp;
     private float deadBodyTimer;
     private float deadBodyDelay = 3.5f;
+    private CapsuleCollider capsule;
 
     private NavMeshAgent agent;
     private Animator animator;
     private AudioSource audioSource;
     private bool isDead;
     private bool attackAble = true;
+    
+    public Transform scoreUI;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        capsule = GetComponent<CapsuleCollider>();
     }
 
     private void Start()
@@ -34,6 +39,7 @@ public class Monster : MonoBehaviour
         deadBodyTimer = 0f;
         
         target = GameObject.FindGameObjectWithTag("Player");
+        scoreUI = GameObject.FindGameObjectWithTag("ScoreUI").transform;
     }
 
     private void FixedUpdate()
@@ -69,9 +75,12 @@ public class Monster : MonoBehaviour
 
     public void OnDie()
     {
+        capsule.enabled = false;
         animator.SetBool("Dead", true);
         audioSource.PlayOneShot(deathSound);
         isDead = true;
+        
+        scoreUI.GetComponent<ScoreUI>().AddScore(100);
     }
 
     private void OnTriggerStay(Collider other)
