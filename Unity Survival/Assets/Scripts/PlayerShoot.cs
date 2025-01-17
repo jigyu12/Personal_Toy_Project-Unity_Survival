@@ -7,6 +7,9 @@ public class PlayerShoot : MonoBehaviour
 
     private PlayerInput input;
     private PlayerHealth playerHealth;
+    
+    public VirtualJoyStickAttack joyStick;
+    
     void Awake()
     {
         input = GetComponent<PlayerInput>();
@@ -15,11 +18,16 @@ public class PlayerShoot : MonoBehaviour
 
     void Update()
     {
+#if UNITY_STANDALONE || UNITY_EDITOR
         if(input.Fire && !playerHealth.isSettingPanelOpen)
         {
             gun.Fire();
         }
-
-        
+#elif UNITY_ANDROID || UNITY_IOS
+        if(joyStick.Input != Vector2.zero && !playerHealth.isSettingPanelOpen)
+        {
+            gun.Fire();
+        }
+#endif
     }
 }
